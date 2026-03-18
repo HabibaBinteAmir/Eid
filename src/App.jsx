@@ -1,12 +1,13 @@
 
 import './App.css'
+import { Home } from './pages/Home'
 
 function App() {
  
 
   return (
 <>
-<h1>habiba this is your eid salami website</h1>
+<Home/>
 </>
   )
 }
