@@ -189,7 +189,7 @@ const PaymentCard = ({ method }) => {
 
 export const Payment = () => {
   return (
-  <div className="w-full pt-4 pb-10 px-4">
+  <div className="w-full pt-10 pb-30 px-4">
 
       {/* Header */}
    

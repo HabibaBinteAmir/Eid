@@ -32,7 +32,7 @@ export const Home = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden">
+    <div className="relative w-full">
 
       {/* Background Image */}
       <div
@@ -44,8 +44,7 @@ export const Home = () => {
       <div className="fixed inset-0 bg-black/20" />
 
       {/* Content */}
-      {/* Content */}
-<div className="relative z-10 flex flex-col items-center justify-start pt-10  px-4 text-center">
+      <div className="relative z-10 flex flex-col items-center justify-center pt-10 px-4 text-center">
 
         {/* Stars */}
         <div className="flex items-center gap-3 mb-1">
