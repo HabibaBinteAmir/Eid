@@ -6,7 +6,6 @@ export const Home = () => {
   const [editing, setEditing] = useState(false);
   const [tempName, setTempName] = useState("");
 
-  // Load saved name from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem("eid-name");
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -42,13 +41,14 @@ export const Home = () => {
       />
 
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="fixed inset-0 bg-black/20" />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 pb-10 text-center">
+      {/* Content */}
+<div className="relative z-10 flex flex-col items-center justify-start pt-10  px-4 text-center">
 
         {/* Stars */}
-        <div className="flex items-center gap-3 mb-2">
+        <div className="flex items-center gap-3 mb-1">
           <span className="text-yellow-400">✦</span>
           <span className="text-yellow-300 text-sm">❋</span>
           <span className="text-yellow-300 text-sm">❋</span>
@@ -83,7 +83,7 @@ export const Home = () => {
         `}</style>
 
         {/* Star divider */}
-        <div className="flex items-center gap-2 my-4 text-yellow-500">
+        <div className="flex items-center gap-2 my-2 text-yellow-500">
           <span className="text-xs">✦</span>
           <div className="w-16 md:w-24 h-px bg-yellow-500/50" />
           <span className="text-xs">✦</span>
@@ -96,8 +96,8 @@ export const Home = () => {
           সবাইকে ঈদের শুভেচ্ছা। আসসালামু আলাইকুম। <br />আল্লাহ আপনার সব দোয়া কবুল করুন।
         </p>
 
-        {/* Sender box — editable */}
-        <div className="mt-6 flex flex-col items-center gap-2">
+        {/* Sender box */}
+        <div className="mt-3 flex flex-col items-center gap-1">
           {editing ? (
             <div className="flex flex-col sm:flex-row items-center gap-2">
               <input
@@ -132,7 +132,7 @@ export const Home = () => {
         </div>
 
         {/* Bottom star divider */}
-        <div className="flex items-center gap-2 my-6 text-yellow-500">
+        <div className="flex items-center gap-2 my-2 text-yellow-500">
           <span className="text-xs">✦</span>
           <div className="w-10 h-px bg-yellow-500/40" />
           <span className="text-xs">✦</span>

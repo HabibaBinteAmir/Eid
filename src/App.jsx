@@ -1,5 +1,6 @@
 
 import './App.css'
+import { Payment } from './components/Payment'
 import { Home } from './pages/Home'
 
 function App() {
@@ -7,7 +8,10 @@ function App() {
 
   return (
 <>
-<Home/>
+<div className="min-h-screen flex flex-col justify-center">
+  <Home />
+  <Payment />
+</div>
 </>
   )
 }
