@@ -10,3 +10,14 @@
   background-size: 200% auto;
   animation: gradientMove 3s linear infinite;
 }
+.glow-text {
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.glow-text:hover {
+  color: #ffd700;
+  text-shadow: 0 0 5px #ffd700,
+               0 0 10px #ffd700,
+               0 0 20px #ffd700;
+}

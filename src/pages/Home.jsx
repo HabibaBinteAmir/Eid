@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import banner from '../assets/banner.jpg';
 
 export const Home = () => {
-  const [name, setName] = useState("Habiba binte Amir");
+  const [name, setName] = useState("");
   const [editing, setEditing] = useState(false);
   const [tempName, setTempName] = useState("");
 
