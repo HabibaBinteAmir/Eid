@@ -1,10 +1,14 @@
-import React, { useState,  } from "react";
+import React, { useState } from "react";
 import upay from "../assets/upay.png";
 import bkash from "../assets/bkash.png";
 import nagod from "../assets/nagod.png";
 import rocket from "../assets/rocket.png";
 import Slider from "react-slick";
 import { PaymentModal } from "./PaymentModal";
+
+// ✅ IMPORTANT: add this if not already
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const PAYMENT_METHODS = [
   {
@@ -40,9 +44,19 @@ const PAYMENT_METHODS = [
 const PrevArrow = ({ onClick }) => (
   <button
     onClick={onClick}
-    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 w-15 h-15 flex items-center justify-center rounded-full bg-black/50 border border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-400 transition-all opacity-0 group-hover:opacity-100"
+    className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-12.5 h-12.5 flex items-center justify-center rounded-full bg-black/50 border border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-400 transition-all opacity-0 group-hover:opacity-100"
   >
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <polyline points="15 18 9 12 15 6" />
     </svg>
   </button>
@@ -51,9 +65,19 @@ const PrevArrow = ({ onClick }) => (
 const NextArrow = ({ onClick }) => (
   <button
     onClick={onClick}
-    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-15 h-15 flex items-center justify-center rounded-full bg-black/50 border border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-400 transition-all opacity-0 group-hover:opacity-100"
+    className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-12.5 h-12.5 flex items-center justify-center rounded-full bg-black/50 border border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-400 transition-all opacity-0 group-hover:opacity-100"
   >
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <polyline points="9 18 15 12 9 6" />
     </svg>
   </button>
@@ -81,8 +105,10 @@ const PaymentCard = ({ method, isShared }) => {
         }}
       >
         <div className="flex flex-col items-center pt-6 pb-4 px-4 gap-3">
+          
+          {/* ✅ fixed size */}
           <div
-            className="w-25 h-25 rounded-2xl flex items-center justify-center overflow-hidden glow-text:hover"
+            className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex items-center justify-center overflow-hidden"
             style={{ background: "#fff", border: "2px solid #ffffff22" }}
           >
             <img
@@ -93,18 +119,20 @@ const PaymentCard = ({ method, isShared }) => {
           </div>
 
           <span
-            className="text-md font-semibold px-6 py-2 rounded-full"
+            className="text-sm sm:text-md font-semibold px-4 sm:px-6 py-2 rounded-full"
             style={{ background: method.color.bg, color: method.color.text }}
           >
             {method.label}
           </span>
 
-          <p className="text-white text-2xl font-bold">{method.name}</p>
+          <p className="text-white text-xl sm:text-2xl font-bold">
+            {method.name}
+          </p>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap justify-center">
             <button
               onClick={() => setShowModal(true)}
-              className="text-white text-xs border flex items-center gap-1 rounded-full px-2 py-0.5 transition-all hover:opacity-80"
+              className="text-white text-xs border flex items-center gap-1 rounded-full px-2 py-1 transition-all hover:opacity-80"
               style={{
                 background: `${method.color.bg}40`,
                 borderColor: `${method.color.bg}80`,
@@ -112,8 +140,9 @@ const PaymentCard = ({ method, isShared }) => {
             >
               ▦ QR কোড
             </button>
+
             <span
-              className="text-white text-xs border flex items-center gap-1 rounded-full px-2 py-0.5"
+              className="text-white text-xs border flex items-center gap-1 rounded-full px-2 py-1"
               style={{
                 background: `${method.color.bg}40`,
                 borderColor: `${method.color.bg}80`,
@@ -127,7 +156,7 @@ const PaymentCard = ({ method, isShared }) => {
 
         <button
           onClick={() => setShowModal(true)}
-          className="mx-4 mb-4 py-3 rounded-xl font-bold text-white text-base tracking-wide hover:opacity-90 active:scale-95 transition-all"
+          className="mx-4 mb-4 py-3 rounded-xl font-bold text-white text-sm sm:text-base tracking-wide hover:opacity-90 active:scale-95 transition-all"
           style={{ background: method.color.bg }}
         >
           সালামি দিন →
@@ -140,23 +169,29 @@ const PaymentCard = ({ method, isShared }) => {
 export const Payment = ({ isShared }) => {
   const settings = {
     dots: true,
-  infinite: true,
-  speed: 700,
-  autoplay: true,
-  autoplaySpeed: 2000,
-  pauseOnHover: true,
-  slidesToShow: 3,
-  slidesToScroll: 1,
-  prevArrow: <PrevArrow />,
-  nextArrow: <NextArrow />,
-  responsive: [
-    { breakpoint: 1024, settings: { slidesToShow: 2 } },
-    { breakpoint: 640, settings: { slidesToShow: 1 } },
-  ],
+    infinite: true,
+    speed: 700,
+    autoplay: true,
+    autoplaySpeed: 2500,
+    pauseOnHover: true,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    prevArrow: <PrevArrow />,
+    nextArrow: <NextArrow />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: { slidesToShow: 2 },
+      },
+      {
+        breakpoint: 640,
+        settings: { slidesToShow: 1 },
+      },
+    ],
   };
 
   return (
-    <div className="group relative z-10 w-full pt-6 pb-10 px-8 max-w-5xl mx-auto">
+    <div className="group relative z-10 w-full overflow-hidden pt-6 pb-10 px-4 sm:px-6 md:px-8 max-w-5xl mx-auto">
       <Slider {...settings}>
         {PAYMENT_METHODS.map((method) => (
           <div key={method.id} className="px-2">
