@@ -1,14 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import upay from "../assets/upay.png";
 import bkash from "../assets/bkash.png";
 import nagod from "../assets/nagod.png";
 import rocket from "../assets/rocket.png";
-import Slider from "react-slick";
 import { PaymentModal } from "./PaymentModal";
-
-// ✅ IMPORTANT: add this if not already
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 const PAYMENT_METHODS = [
   {
@@ -41,48 +36,6 @@ const PAYMENT_METHODS = [
   },
 ];
 
-const PrevArrow = ({ onClick }) => (
-  <button
-    onClick={onClick}
-    className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-12.5 h-12.5 flex items-center justify-center rounded-full bg-black/50 border border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-400 transition-all opacity-0 group-hover:opacity-100"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="15 18 9 12 15 6" />
-    </svg>
-  </button>
-);
-
-const NextArrow = ({ onClick }) => (
-  <button
-    onClick={onClick}
-    className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-12.5 h-12.5 flex items-center justify-center rounded-full bg-black/50 border border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-400 transition-all opacity-0 group-hover:opacity-100"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="9 18 15 12 9 6" />
-    </svg>
-  </button>
-);
-
 const PaymentCard = ({ method, isShared }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -105,8 +58,6 @@ const PaymentCard = ({ method, isShared }) => {
         }}
       >
         <div className="flex flex-col items-center pt-6 pb-4 px-4 gap-3">
-          
-          {/* ✅ fixed size */}
           <div
             className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex items-center justify-center overflow-hidden"
             style={{ background: "#fff", border: "2px solid #ffffff22" }}
@@ -167,51 +118,56 @@ const PaymentCard = ({ method, isShared }) => {
 };
 
 export const Payment = ({ isShared }) => {
-  const settings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  autoplay: true,
-  autoplaySpeed: 2500,
-  pauseOnHover: true,
+  const scrollRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
 
-  slidesToShow: 3,
-  slidesToScroll: 1,
+  // 🔥 Auto smooth scroll
+  useEffect(() => {
+    if (isPaused) return;
 
-  swipe: true,
-  swipeToSlide: true,
-  touchMove: true,
+    const interval = setInterval(() => {
+      if (!scrollRef.current) return;
 
-  adaptiveHeight: true,
+      const container = scrollRef.current;
+      const firstChild = container.firstElementChild;
+      if (!firstChild) return;
 
-  prevArrow: <PrevArrow />,
-  nextArrow: <NextArrow />,
+      const gap = 16;
+      const scrollAmount = firstChild.offsetWidth + gap;
 
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: { slidesToShow: 2 },
-    },
-    {
-      breakpoint: 640,
-      settings: {
-        slidesToShow: 1,
-        centerMode: false,   // 🔥 IMPORTANT
-      },
-    },
-  ],
-};
+      container.scrollBy({
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+    }, 2500);
 
+    return () => clearInterval(interval);
+  }, [isPaused]);
 
   return (
-    <div className="  group relative z-10 w-full overflow-hidden pt-6 pb-10 px-4 sm:px-6 md:px-8 max-w-5xl mx-auto">
-      <Slider {...settings}>
+    <div
+      className="group relative z-10 w-full max-w-5xl mx-auto pt-6 pb-10"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
+    >
+      <div
+        ref={scrollRef}
+        className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth px-4
+                   [-ms-overflow-style:none] [scrollbar-width:none]
+                   [&::-webkit-scrollbar]:hidden"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
         {PAYMENT_METHODS.map((method) => (
-          <div key={method.id} className="px-2">
+          <div
+            key={method.id}
+            className="snap-center shrink-0 w-[85vw] sm:w-[45%] lg:w-[30%]"
+          >
             <PaymentCard method={method} isShared={isShared} />
           </div>
         ))}
-      </Slider>
+      </div>
     </div>
   );
 };
