@@ -215,7 +215,7 @@ export const PaymentModal = ({ method, isShared, onClose }) => {
 {/* Success modal */}
 {showSuccess && (
   <SuccessModal
-    senderName="আনন্দ রায়"
+    senderName=""
     onClose={() => { setShowSuccess(false); onClose(); }}
   />
 )}

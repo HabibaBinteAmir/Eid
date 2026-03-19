@@ -21,3 +21,19 @@
                0 0 10px #ffd700,
                0 0 20px #ffd700;
 }
+/* FIX react-slick overflow + flex issues */
+.slick-slider {
+  width: 100%;
+}
+
+.slick-track {
+  display: flex !important;
+}
+
+.slick-slide {
+  height: auto;
+}
+
+.slick-slide > div {
+  height: 100%;
+}
