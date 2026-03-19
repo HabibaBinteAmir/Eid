@@ -168,30 +168,43 @@ const PaymentCard = ({ method, isShared }) => {
 
 export const Payment = ({ isShared }) => {
   const settings = {
-    dots: true,
-    infinite: true,
-    speed: 700,
-    autoplay: true,
-    autoplaySpeed: 2500,
-    pauseOnHover: true,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    prevArrow: <PrevArrow />,
-    nextArrow: <NextArrow />,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: { slidesToShow: 2 },
+  dots: true,
+  infinite: true,
+  speed: 500,
+  autoplay: true,
+  autoplaySpeed: 2500,
+  pauseOnHover: true,
+
+  slidesToShow: 3,
+  slidesToScroll: 1,
+
+  swipe: true,
+  swipeToSlide: true,
+  touchMove: true,
+
+  adaptiveHeight: true,
+
+  prevArrow: <PrevArrow />,
+  nextArrow: <NextArrow />,
+
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: { slidesToShow: 2 },
+    },
+    {
+      breakpoint: 640,
+      settings: {
+        slidesToShow: 1,
+        centerMode: false,   // 🔥 IMPORTANT
       },
-      {
-        breakpoint: 640,
-        settings: { slidesToShow: 1 },
-      },
-    ],
-  };
+    },
+  ],
+};
+
 
   return (
-    <div className="  group relative z-10 w-full overflow-hidden pt-6 pb-10 px-4 sm:px-6 md:px-8 max-w-5xl mx-auto">
+   <div className="group relative z-10 w-full max-w-full overflow-hidden px-4 sm:px-6 md:px-8">
       <Slider {...settings}>
         {PAYMENT_METHODS.map((method) => (
           <div key={method.id} className="px-2">

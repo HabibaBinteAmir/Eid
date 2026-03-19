@@ -37,3 +37,28 @@
 .slick-slide > div {
   height: 100%;
 }
+html, body {
+  overflow-x: hidden;
+}
+
+/* FIX react-slick mobile issues */
+.slick-slider {
+  width: 100%;
+}
+
+.slick-list {
+  overflow: hidden !important;
+}
+
+.slick-track {
+  display: flex !important;
+  align-items: stretch;
+}
+
+.slick-slide {
+  height: auto;
+}
+
+.slick-slide > div {
+  height: 100%;
+}
