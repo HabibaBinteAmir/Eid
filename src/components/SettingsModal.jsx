@@ -55,57 +55,74 @@ export const SettingsModal = ({ onClose }) => {
 
   return ReactDOM.createPortal(
     <div
-      className="fixed inset-0 z-9999 flex items-start justify-center px-4 pt-16"
-      style={{ background: "rgba(0,0,0,0.75)" }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center px-4 py-6"
+      style={{ background: "rgba(0,0,0,0.70)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
+      <style>{`
+        .settings-scroll::-webkit-scrollbar { display: none; }
+        .settings-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        .settings-input:focus { box-shadow: 0 0 0 2px rgba(250,204,21,0.3); }
+      `}</style>
+
       <div
-        className="relative w-full max-w-sm rounded-3xl overflow-hidden"
-        style={{ background: "#1a1a1a", colorScheme: "light" }}
+        className="relative w-full rounded-3xl overflow-hidden flex flex-col"
+        style={{
+          maxWidth: "420px",
+          maxHeight: "90vh",
+          background: "linear-gradient(160deg, rgba(30,25,10,0.97) 0%, rgba(15,12,5,0.98) 100%)",
+          border: "1.5px solid rgba(250,204,21,0.25)",
+          boxShadow: "0 0 60px rgba(250,204,21,0.08), 0 30px 80px rgba(0,0,0,0.6)",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Gold top accent line */}
+        <div style={{ height: "2px", background: "linear-gradient(90deg, transparent, #facc15, transparent)" }} />
+
         {/* Header */}
         <div
-          className="flex items-center justify-between px-5 pt-5 pb-3"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}
+          className="flex items-center justify-between px-6 pt-5 pb-4 flex-shrink-0"
+          style={{ borderBottom: "1px solid rgba(250,204,21,0.12)" }}
         >
           <div>
-            <p className="text-white font-bold text-lg">✨ সেটিংস</p>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px" }}>
+            <p className="text-yellow-400 font-bold text-lg tracking-wide">✨ সেটিংস</p>
+            <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "12px", marginTop: "2px" }}>
               আপনার পেমেন্ট নম্বরগুলো এখানে দিন
             </p>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full text-white/60 hover:text-white transition-all"
-            style={{ background: "rgba(255,255,255,0.1)" }}
+            className="w-9 h-9 flex items-center justify-center rounded-full text-white/50 hover:text-yellow-400 hover:bg-yellow-500/10 transition-all duration-200"
+            style={{ border: "1px solid rgba(255,255,255,0.1)" }}
           >
             ✕
           </button>
         </div>
 
-        {/* Body */}
-        <div className="px-5 py-4 flex flex-col gap-4" style={{ maxHeight: "70vh", overflowY: "auto" }}>
+        {/* Body — scrollable, no scrollbar */}
+        <div className="settings-scroll px-6 py-5 flex flex-col gap-4 overflow-y-auto flex-1">
 
           {/* Name */}
-          <div className="flex flex-col gap-1">
-            <label style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px" }}>
+          <div className="flex flex-col gap-1.5">
+            <label style={{ color: "rgba(255,255,255,0.55)", fontSize: "12px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>
               👤 আপনার নাম
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="আপনার নাম"
+              placeholder="আপনার নাম লিখুন"
+              className="settings-input"
               style={{
-                background: "rgba(255,255,255,0.08)",
-                border: "1.5px solid #facc15",
-                borderRadius: "10px",
-                padding: "10px 14px",
+                background: "rgba(250,204,21,0.06)",
+                border: "1.5px solid rgba(250,204,21,0.4)",
+                borderRadius: "12px",
+                padding: "11px 14px",
                 color: "#facc15",
                 fontSize: "15px",
                 outline: "none",
                 width: "100%",
+                transition: "box-shadow 200ms ease",
               }}
             />
           </div>
@@ -114,17 +131,20 @@ export const SettingsModal = ({ onClose }) => {
           {PAYMENT_METHODS.map((method) => (
             <div
               key={method.id}
-              className="flex flex-col gap-2 rounded-2xl p-4"
-              style={{ background: "rgba(255,255,255,0.05)", border: `1px solid ${method.color}40` }}
+              className="flex flex-col gap-2.5 rounded-2xl p-4"
+              style={{
+                background: `color-mix(in srgb, ${method.color} 6%, rgba(255,255,255,0.03))`,
+                border: `1px solid ${method.color}35`,
+              }}
             >
               <div className="flex items-center gap-2">
                 <span
-                  className="text-xs font-bold px-2 py-0.5 rounded-full"
-                  style={{ background: method.color, color: "#fff" }}
+                  className="text-xs font-bold px-2.5 py-0.5 rounded-full"
+                  style={{ background: method.color, color: "#fff", letterSpacing: "0.03em" }}
                 >
                   {method.label}
                 </span>
-                <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px" }}>📱 নম্বর</span>
+                <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "12px" }}>📱 নম্বর</span>
               </div>
 
               <input
@@ -132,21 +152,23 @@ export const SettingsModal = ({ onClose }) => {
                 value={numbers[method.id]}
                 onChange={(e) => setNumbers((prev) => ({ ...prev, [method.id]: e.target.value }))}
                 placeholder="01XXXXXXXXX"
+                className="settings-input"
                 style={{
-                  background: "rgba(0,0,0,0.3)",
-                  border: `1px solid ${method.color}60`,
-                  borderRadius: "8px",
-                  padding: "8px 12px",
+                  background: "rgba(0,0,0,0.35)",
+                  border: `1px solid ${method.color}50`,
+                  borderRadius: "10px",
+                  padding: "9px 13px",
                   color: "#ffffff",
                   fontSize: "14px",
                   outline: "none",
                   width: "100%",
+                  transition: "box-shadow 200ms ease",
                 }}
               />
 
               <button
-                className="flex items-center gap-1 text-xs"
-                style={{ color: "rgba(255,255,255,0.4)", background: "none", border: "none", cursor: "pointer" }}
+                className="flex items-center gap-1 text-xs transition-opacity hover:opacity-70"
+                style={{ color: "rgba(255,255,255,0.35)", background: "none", border: "none", cursor: "pointer" }}
               >
                 ▦ QR কোড আপলোড
               </button>
@@ -155,11 +177,14 @@ export const SettingsModal = ({ onClose }) => {
         </div>
 
         {/* Save button */}
-        <div className="px-5 pb-5 pt-2">
+        <div className="px-6 pb-6 pt-3 flex-shrink-0" style={{ borderTop: "1px solid rgba(250,204,21,0.10)" }}>
           <button
             onClick={handleSave}
-            className="w-full py-3 rounded-2xl font-bold text-black text-base transition-all hover:opacity-90 active:scale-95"
-            style={{ background: "linear-gradient(135deg, #facc15, #f59e0b)" }}
+            className="w-full py-3.5 rounded-2xl font-bold text-black text-base transition-all hover:opacity-90 active:scale-95"
+            style={{
+              background: "linear-gradient(135deg, #facc15 0%, #f59e0b 100%)",
+              boxShadow: "0 4px 20px rgba(250,204,21,0.25)",
+            }}
           >
             সেভ করুন ✓
           </button>
