@@ -127,7 +127,7 @@ export const Home = () => {
               </span>
             </div>
           )}
-          <p className="text-white/40 text-xs">click your name to edit it</p>
+          <p className="text-white/40 text-xs"></p>
         </div>
 
         {/* Bottom star divider */}
