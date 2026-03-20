@@ -22,43 +22,22 @@
                0 0 20px #ffd700;
 }
 /* FIX react-slick overflow + flex issues */
-.slick-slider {
-  width: 100%;
-}
 
-.slick-track {
-  display: flex !important;
-}
-
-.slick-slide {
-  height: auto;
-}
-
-.slick-slide > div {
-  height: 100%;
-}
 html, body {
   overflow-x: hidden;
 }
 
 /* FIX react-slick mobile issues */
-.slick-slider {
-  width: 100%;
-}
-
-.slick-list {
-  overflow: hidden !important;
+.slick-slide {
+  height: auto !important;
 }
 
 .slick-track {
   display: flex !important;
-  align-items: stretch;
-}
-
-.slick-slide {
-  height: auto;
+  align-items: stretch !important;
 }
 
 .slick-slide > div {
   height: 100%;
+  width: 100%;
 }
