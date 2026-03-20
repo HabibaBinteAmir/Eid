@@ -87,15 +87,14 @@ const PaymentCard = ({ method, isShared }) => {
         }}
       >
         <div className="flex flex-col items-center pt-6 pb-4 px-4 dark:bg-transparent gap-4">
-
           <div
-            className="w-20 h-20   md:w-28 md:h-28 rounded-2xl  flex items-center justify-center overflow-hidden"
-            style={{ background: "#fff",  border: "2px solid #ffffff22" }}
+            className="w-20 h-20 md:w-28 md:h-28 rounded-2xl flex items-center justify-center overflow-hidden"
+            style={{ background: "#fff", border: "2px solid #ffffff22" }}
           >
             <img
               src={method.logo}
               alt={method.name}
-              className="w-full h-full object-contain p-2 "
+              className="w-full h-full object-contain p-2"
             />
           </div>
 
@@ -145,7 +144,6 @@ const PaymentCard = ({ method, isShared }) => {
   );
 };
 
-// ✅ exported component wrapping the return
 export const Payment = ({ isShared }) => {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 640);
 
@@ -153,7 +151,7 @@ export const Payment = ({ isShared }) => {
     const handler = () => setIsMobile(window.innerWidth < 640);
     window.addEventListener("resize", handler);
     return () => window.removeEventListener("resize", handler);
-  }, []); 
+  }, []);
 
   const settings = {
     dots: true,
@@ -178,45 +176,54 @@ export const Payment = ({ isShared }) => {
           style={{
             display: "flex",
             overflowX: "auto",
-            gap: "12px",
-            padding: "0 16px 16px",
             scrollSnapType: "x mandatory",
             WebkitOverflowScrolling: "touch",
             scrollbarWidth: "none",
+            msOverflowStyle: "none",
           }}
         >
           {PAYMENT_METHODS.map((method) => (
             <div
               key={method.id}
               style={{
-                minWidth: "80vw",
-                maxWidth: "300px",
-                scrollSnapAlign: "center",
+                minWidth: "100%",
+                scrollSnapAlign: "start",
                 flexShrink: 0,
+                padding: "0 16px",
+                boxSizing: "border-box",
               }}
             >
               <PaymentCard method={method} isShared={isShared} />
             </div>
           ))}
         </div>
-        <div className="flex justify-center gap-2 mt-2">
+
+        {/* Dots */}
+        <div className="flex justify-center gap-2 mt-3">
           {PAYMENT_METHODS.map((_, i) => (
-            <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", background: "rgba(250,204,21,0.5)" }} />
+            <div
+              key={i}
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                background: "rgba(250,204,21,0.5)",
+              }}
+            />
           ))}
         </div>
       </div>
     );
   }
 
-
   return (
     <div
       className="group relative z-10 w-full mx-auto"
-      style={{ maxWidth: "1024px", padding: "24px 16px 40px" }}
+      style={{ maxWidth: "1024px", padding: "24px 4px 40px" }}
     >
       <Slider {...settings}>
         {PAYMENT_METHODS.map((method) => (
-          <div key={method.id} style={{ padding: "0 8px" }}>
+          <div key={method.id} style={{ padding: "0 4px" }}>
             <PaymentCard method={method} isShared={isShared} />
           </div>
         ))}
