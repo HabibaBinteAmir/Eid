@@ -176,7 +176,7 @@ export const Home = () => {
           className="text-white/80 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-sm md:max-w-md leading-relaxed"
           style={{ animation: "riseIn 700ms ease both", animationDelay: "300ms" }}
         >
-          সবাইকে ঈদের শুভেচ্ছা। আসসালামু আলাইকুম। <br />আল্লাহ আপনার সব দোয়া কবুল করুন।
+           আসসালামু আলাইকুম। সবাইকে ঈদের শুভেচ্ছা। <br />আল্লাহ আপনার সব দোয়া কবুল করুন।
         </p>
 
         {/* Sender box */}
