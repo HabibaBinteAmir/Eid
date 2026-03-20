@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Env files (Supabase keys, etc.)
+.env
+.env.*

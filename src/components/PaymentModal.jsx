@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { QRCodeSVG } from "qrcode.react";
 import { SuccessModal } from "./SuccessModal";
+import { getGlobalSettings, getSharedDataFromUrl, saveGlobalSettings } from "../lib/eidData";
 
 const INSTRUCTIONS = {
   upay: [
@@ -40,21 +41,48 @@ export const PaymentModal = ({ method, isShared, onClose }) => {
   const [tempNumber, setTempNumber] = React.useState("");
   const [copied, setCopied] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false);
+  const [settings, setSettings] = React.useState(null);
 
-  // Load number from localStorage on open
+  const sharedData = getSharedDataFromUrl();
+
+  // Load number on open/change
   React.useEffect(() => {
-    
-    const saved = localStorage.getItem(`eid-number-${method.id}`);
-    if (saved) setNumber(saved);
-  }, [method.id]);
+    let cancelled = false;
+    (async () => {
+      if (isShared) {
+        const n = sharedData?.[method.id] || "";
+        if (!cancelled) setNumber(n);
+        return;
+      }
+
+      const current = await getGlobalSettings();
+      if (cancelled) return;
+      setSettings(current);
+      setNumber(current?.[method.id] || "");
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isShared, method.id, sharedData]);
 
   const handleSave = () => {
     const trimmed = tempNumber.trim();
-    if (trimmed) {
-      setNumber(trimmed);
-      localStorage.setItem(`eid-number-${method.id}`, trimmed);
+    if (!trimmed) return;
+
+    if (isShared) {
+      setEditing(false);
+      return;
     }
-    setEditing(false);
+
+    (async () => {
+      const current = settings || (await getGlobalSettings());
+      const next = { ...current, [method.id]: trimmed };
+      await saveGlobalSettings(next);
+      setSettings(next);
+      setNumber(trimmed);
+      setEditing(false);
+    })();
   };
 
   const handleCopy = () => {

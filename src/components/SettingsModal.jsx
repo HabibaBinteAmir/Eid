@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { getGlobalSettings, saveGlobalSettings } from "../lib/eidData";
 
 const PAYMENT_METHODS = [
   { id: "bkash", label: "bKash", color: "#e11d73" },
@@ -9,21 +10,47 @@ const PAYMENT_METHODS = [
 ];
 
 export const SettingsModal = ({ onClose }) => {
-  const [name, setName] = React.useState(localStorage.getItem("eid-name") || "");
+  const [name, setName] = React.useState("");
   const [numbers, setNumbers] = React.useState(() => {
     const obj = {};
     PAYMENT_METHODS.forEach((m) => {
-      obj[m.id] = localStorage.getItem(`eid-number-${m.id}`) || "";
+      obj[m.id] = "";
     });
     return obj;
   });
 
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const current = await getGlobalSettings();
+      if (cancelled) return;
+      setName(current.name || "");
+      setNumbers({
+        upay: current.upay || "",
+        bkash: current.bkash || "",
+        nagad: current.nagad || "",
+        rocket: current.rocket || "",
+      });
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const handleSave = () => {
-    localStorage.setItem("eid-name", name.trim());
-    PAYMENT_METHODS.forEach((m) => {
-      localStorage.setItem(`eid-number-${m.id}`, numbers[m.id].trim());
-    });
-    onClose();
+    const next = {
+      name: name.trim(),
+      upay: (numbers.upay || "").trim(),
+      bkash: (numbers.bkash || "").trim(),
+      nagad: (numbers.nagad || "").trim(),
+      rocket: (numbers.rocket || "").trim(),
+    };
+
+    (async () => {
+      await saveGlobalSettings(next);
+      onClose();
+    })();
   };
 
   return ReactDOM.createPortal(
