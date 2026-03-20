@@ -55,7 +55,7 @@ export const SettingsModal = ({ onClose }) => {
 
   return ReactDOM.createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center px-4 py-6"
+      className="fixed inset-0 z-9999 flex items-center justify-center px-4 py-6"
       style={{ background: "rgba(0,0,0,0.70)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
@@ -81,7 +81,7 @@ export const SettingsModal = ({ onClose }) => {
 
         {/* Header */}
         <div
-          className="flex items-center justify-between px-6 pt-5 pb-4 flex-shrink-0"
+          className="flex items-center justify-between px-6 pt-5 pb-4 shrink-0"
           style={{ borderBottom: "1px solid rgba(250,204,21,0.12)" }}
         >
           <div>
@@ -177,7 +177,7 @@ export const SettingsModal = ({ onClose }) => {
         </div>
 
         {/* Save button */}
-        <div className="px-6 pb-6 pt-3 flex-shrink-0" style={{ borderTop: "1px solid rgba(250,204,21,0.10)" }}>
+        <div className="px-6 pb-6 pt-3 shrink-0" style={{ borderTop: "1px solid rgba(250,204,21,0.10)" }}>
           <button
             onClick={handleSave}
             className="w-full py-3.5 rounded-2xl font-bold text-black text-base transition-all hover:opacity-90 active:scale-95"

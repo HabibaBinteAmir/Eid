@@ -5,6 +5,11 @@ import nagod from "../assets/nagod.png";
 import rocket from "../assets/rocket.png";
 import Slider from "react-slick";
 import { PaymentModal } from "./PaymentModal";
+import {
+  getGlobalSettings,
+  getSharedParam,
+  getSharedData,
+} from "../lib/eidData";
 
 const PAYMENT_METHODS = [
   {
@@ -42,7 +47,17 @@ const PrevArrow = ({ onClick }) => (
     onClick={onClick}
     className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-14 h-14 flex items-center justify-center rounded-full bg-black/50 border border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-400 transition-all opacity-0 group-hover:opacity-100"
   >
-    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="26"
+      height="26"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <polyline points="15 18 9 12 15 6" />
     </svg>
   </button>
@@ -53,19 +68,35 @@ const NextArrow = ({ onClick }) => (
     onClick={onClick}
     className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-14 h-14 flex items-center justify-center rounded-full bg-black/50 border border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-400 transition-all opacity-0 group-hover:opacity-100"
   >
-    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="26"
+      height="26"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <polyline points="9 18 15 12 9 6" />
     </svg>
   </button>
 );
 
-const PaymentCard = ({ method, isShared, variant = "desktop", index = 0 }) => {
+const PaymentCard = ({
+  method,
+  isShared,
+  variant = "desktop",
+  index = 0,
+  disabled = false,
+}) => {
   const [showModal, setShowModal] = useState(false);
   const isDesktop = variant === "desktop";
 
   const logoClass = isDesktop
-    ? "w-20 h-20 md:w-26 md:h-26 rounded-2xl flex items-center justify-center overflow-hidden"
-    : "w-20 h-20 md:w-28 md:h-28 rounded-2xl flex items-center justify-center overflow-hidden";
+    ? "w-20 h-20 md:w-24 md:h-24 rounded-2xl flex items-center justify-center overflow-hidden"
+    : "w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden";
 
   const cardMaxWidth = isDesktop ? "260px" : "280px";
   const ctaMx = isDesktop ? "mx-5" : "mx-6";
@@ -73,7 +104,7 @@ const PaymentCard = ({ method, isShared, variant = "desktop", index = 0 }) => {
 
   return (
     <>
-      {showModal && (
+      {showModal && !disabled && (
         <PaymentModal
           method={method}
           isShared={isShared}
@@ -82,23 +113,57 @@ const PaymentCard = ({ method, isShared, variant = "desktop", index = 0 }) => {
       )}
 
       <div
-        className="payment-card"
+        className={`payment-card ${disabled ? "payment-card-disabled" : ""}`}
         style={{
           display: "flex",
           flexDirection: "column",
           borderRadius: "16px",
           overflow: "hidden",
-          background: `color-mix(in srgb, ${method.color.bg} 20%, transparent)`,
-          border: `2px solid ${method.color.bg}80`,
-          backdropFilter: "blur(8px)",
+          background: 
+             `${method.color.bg}40` // ~25% opacity
+, // ~8% opacity
+          border: `2px solid ${disabled ? "rgba(255,255,255,0.08)" : method.color.bg}`,
+          backdropFilter: "blur(4px)",
+          boxShadow: "none",
           width: "100%",
           maxWidth: cardMaxWidth,
           margin: "0 auto",
           animation: "cardIn 650ms ease both",
           animationDelay: `${index * 120}ms`,
+          transition: "box-shadow 300ms ease, transform 200ms ease",
+          "--card-color": method.color.bg,
+          opacity: disabled ? 0.28 : 1,
+          filter: disabled ? "grayscale(1) brightness(0.5)" : "none",
+          cursor: disabled ? "not-allowed" : "default",
+          position: "relative",
+          pointerEvents: disabled ? "none" : "auto",
         }}
       >
-        <div className="flex flex-col items-center pt-6 pb-4 px-4 dark:bg-transparent gap-4">
+        {/* Lock overlay for disabled */}
+        {disabled && (
+          <div
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-2"
+            style={{
+              background: "rgba(0,0,0,0.55)",
+              backdropFilter: "blur(2px)",
+            }}
+          >
+            <span style={{ fontSize: "36px" }}>🔒</span>
+            <span
+              style={{
+                color: "rgba(255,255,255,0.5)",
+                fontSize: "11px",
+                fontWeight: 700,
+                letterSpacing: "0.05em",
+                textTransform: "uppercase",
+              }}
+            >
+              নম্বর নেই
+            </span>
+          </div>
+        )}
+
+        <div className="flex flex-col items-center pt-6 pb-3 px-4 gap-4">
           <div
             className={logoClass}
             style={{
@@ -116,7 +181,7 @@ const PaymentCard = ({ method, isShared, variant = "desktop", index = 0 }) => {
           </div>
 
           <span
-            className="text-xl font-semibold px-3 py-2 rounded-full"
+            className="text-sm font-semibold px-3 py-1.5 rounded-full"
             style={{
               background: method.color.bg,
               color: method.color.text,
@@ -128,7 +193,7 @@ const PaymentCard = ({ method, isShared, variant = "desktop", index = 0 }) => {
           </span>
 
           <p
-            className="text-white text-2xl font-bold"
+            className="text-white text-2xl font-bold -mt-1"
             style={{
               animation: "riseInSmall 650ms ease both",
               animationDelay: `${index * 120 + 160}ms`,
@@ -137,30 +202,30 @@ const PaymentCard = ({ method, isShared, variant = "desktop", index = 0 }) => {
             {method.name}
           </p>
 
-          <div className="flex gap-2 flex-wrap justify-center">
+          <div className="flex gap-2 flex-wrap justify-center -mt-1">
             <button
               onClick={() => setShowModal(true)}
-              className="text-white text-xl border flex items-center gap-1 rounded-full px-2 py-1 transition-all hover:opacity-80"
+              className="text-white text-sm border flex  items-center gap-1 rounded-full px-3 py-1 transition-all hover:opacity-80"
               style={{
                 background: `${method.color.bg}40`,
                 borderColor: `${method.color.bg}40`,
-              animation: "riseInSmall 650ms ease both",
-              animationDelay: `${index * 120 + 200}ms`,
+                animation: "riseInSmall 650ms ease both",
+                animationDelay: `${index * 120 + 200}ms`,
               }}
             >
               ▦ QR কোড
             </button>
 
             <span
-              className="text-white text-xl border flex items-center gap-1 rounded-full px-2 py-1"
+              className="text-white text-sm border flex items-center gap-1 rounded-full px-3 py-1"
               style={{
                 background: `${method.color.bg}40`,
-                borderColor: `${method.color.bg}80`,
+                borderColor: `${method.color.bg}40`,
                 animation: "riseInSmall 650ms ease both",
                 animationDelay: `${index * 120 + 220}ms`,
               }}
             >
-              <span className="text-red-400 animate-pulse text-sm">♥</span>
+              <span className="text-red-400 animate-pulse text-xs">♥</span>
               ভালোবাসা
             </span>
           </div>
@@ -168,11 +233,11 @@ const PaymentCard = ({ method, isShared, variant = "desktop", index = 0 }) => {
 
         <button
           onClick={() => setShowModal(true)}
-          className={`${ctaMx} ${ctaMb} py-4 rounded-xl font-bold text-white text-base tracking-wide hover:opacity-90 active:scale-95 transition-all`}
+          className={`${ctaMx} ${ctaMb} py-3.5 rounded-xl font-bold text-white text-base tracking-wide hover:opacity-90 active:scale-95 transition-all`}
           style={{
             background: method.color.bg,
             animation: "riseInSmall 650ms ease both",
-            animationDelay: `${index * 120 + 260}ms`,
+            animationDelay: `${index * 120 + 280}ms`,
           }}
         >
           সালামি দিন →
@@ -184,6 +249,7 @@ const PaymentCard = ({ method, isShared, variant = "desktop", index = 0 }) => {
 
 export const Payment = ({ isShared }) => {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth < 640);
+  const [activeMethods, setActiveMethods] = React.useState(PAYMENT_METHODS);
 
   React.useEffect(() => {
     const handler = () => setIsMobile(window.innerWidth < 640);
@@ -191,7 +257,30 @@ export const Payment = ({ isShared }) => {
     return () => window.removeEventListener("resize", handler);
   }, []);
 
-  const settings = {
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      let settings;
+      const param = getSharedParam();
+      if (param) {
+        settings = await getSharedData(param);
+      } else {
+        settings = await getGlobalSettings();
+      }
+      if (cancelled) return;
+      if (settings) {
+        const filtered = PAYMENT_METHODS.filter(
+          (m) => settings[m.id] && settings[m.id].trim() !== "",
+        );
+        if (filtered.length > 0) setActiveMethods(filtered);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const sliderSettings = {
     dots: true,
     infinite: true,
     speed: 700,
@@ -220,12 +309,11 @@ export const Payment = ({ isShared }) => {
             100% { opacity: 1; transform: translateY(0) scale(1); }
           }
           .payment-card {
-            box-shadow: 0 0 0 rgba(250,204,21,0);
-            transition: transform 200ms ease, box-shadow 200ms ease;
+            transition: transform 200ms ease, box-shadow 300ms ease;
           }
           .payment-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+            transform: translateY(-6px);
+            box-shadow: 0 0 28px var(--card-color, rgba(250,204,21,0.7)), 0 0 10px var(--card-color, rgba(250,204,21,0.5)), 0 20px 40px rgba(0,0,0,0.3);
           }
         `}</style>
         <div
@@ -238,7 +326,7 @@ export const Payment = ({ isShared }) => {
             msOverflowStyle: "none",
           }}
         >
-          {PAYMENT_METHODS.map((method, idx) => (
+          {activeMethods.map((method, idx) => (
             <div
               key={method.id}
               style={{
@@ -249,14 +337,19 @@ export const Payment = ({ isShared }) => {
                 boxSizing: "border-box",
               }}
             >
-              <PaymentCard method={method} isShared={isShared} variant="mobile" index={idx} />
+              <PaymentCard
+                method={method}
+                isShared={isShared}
+                variant="mobile"
+                index={idx}
+              />
             </div>
           ))}
         </div>
 
         {/* Dots */}
         <div className="flex justify-center gap-2 mt-3">
-          {PAYMENT_METHODS.map((_, i) => (
+          {activeMethods.map((_, i) => (
             <div
               key={i}
               style={{
@@ -287,18 +380,22 @@ export const Payment = ({ isShared }) => {
           100% { opacity: 1; transform: translateY(0) scale(1); }
         }
         .payment-card {
-          box-shadow: 0 0 0 rgba(250,204,21,0);
-          transition: transform 200ms ease, box-shadow 200ms ease;
+          transition: transform 200ms ease, box-shadow 300ms ease;
         }
         .payment-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+          transform: translateY(-6px);
+          box-shadow: 0 0 28px var(--card-color, rgba(250,204,21,0.7)), 0 0 10px var(--card-color, rgba(250,204,21,0.5)), 0 20px 40px rgba(0,0,0,0.3);
         }
       `}</style>
-      <Slider {...settings}>
-        {PAYMENT_METHODS.map((method, idx) => (
+      <Slider {...sliderSettings}>
+        {activeMethods.map((method, idx) => (
           <div key={method.id} style={{ padding: "0 0px" }}>
-            <PaymentCard method={method} isShared={isShared} variant="desktop" index={idx} />
+            <PaymentCard
+              method={method}
+              isShared={isShared}
+              variant="desktop"
+              index={idx}
+            />
           </div>
         ))}
       </Slider>
