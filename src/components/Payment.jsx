@@ -142,8 +142,8 @@ const PaymentCard = ({ method, isShared, variant = "desktop", index = 0 }) => {
               onClick={() => setShowModal(true)}
               className="text-white text-xl border flex items-center gap-1 rounded-full px-2 py-1 transition-all hover:opacity-80"
               style={{
-                background: `${method.color.bg}20`,
-                borderColor: `${method.color.bg}80`,
+                background: `${method.color.bg}40`,
+                borderColor: `${method.color.bg}40`,
               animation: "riseInSmall 650ms ease both",
               animationDelay: `${index * 120 + 200}ms`,
               }}
