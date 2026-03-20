@@ -61,7 +61,7 @@ export const Home = () => {
 
         {/* Main Heading */}
         <h1
-          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight tracking-wide drop-shadow-[0_2px_16px_rgba(245,200,66,0.5)]"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold animate-spin leading-tight tracking-wide drop-shadow-[0_2px_16px_rgba(245,200,66,0.5)]"
           style={{
             background: "linear-gradient(90deg, #ffffff, #facc15, #ffffff)",
             backgroundSize: "200% auto",

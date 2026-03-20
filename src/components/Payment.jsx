@@ -82,25 +82,25 @@ const PaymentCard = ({ method, isShared }) => {
           border: `2px solid ${method.color.bg}80`,
           backdropFilter: "blur(8px)",
           width: "100%",
-          maxWidth: "300px",
+          maxWidth: "280px",
           margin: "0 auto",
         }}
       >
-        <div className="flex flex-col items-center pt-6 pb-4 px-4 gap-3">
+        <div className="flex flex-col items-center pt-6 pb-4 px-4 dark:bg-transparent gap-4">
 
           <div
-            className="w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden"
-            style={{ background: "#fff", border: "2px solid #ffffff22" }}
+            className="w-20 h-20   md:w-28 md:h-28 rounded-2xl  flex items-center justify-center overflow-hidden"
+            style={{ background: "#fff",  border: "2px solid #ffffff22" }}
           >
             <img
               src={method.logo}
               alt={method.name}
-              className="w-full h-full object-contain p-2"
+              className="w-full h-full object-contain p-2 "
             />
           </div>
 
           <span
-            className="text-xs font-semibold px-3 py-1 rounded-full"
+            className="text-xl font-semibold px-3 py-2 rounded-full"
             style={{ background: method.color.bg, color: method.color.text }}
           >
             {method.label}
@@ -111,7 +111,7 @@ const PaymentCard = ({ method, isShared }) => {
           <div className="flex gap-2 flex-wrap justify-center">
             <button
               onClick={() => setShowModal(true)}
-              className="text-white text-xs border flex items-center gap-1 rounded-full px-2 py-1 transition-all hover:opacity-80"
+              className="text-white text-xl border flex items-center gap-1 rounded-full px-2 py-1 transition-all hover:opacity-80"
               style={{
                 background: `${method.color.bg}40`,
                 borderColor: `${method.color.bg}80`,
@@ -121,7 +121,7 @@ const PaymentCard = ({ method, isShared }) => {
             </button>
 
             <span
-              className="text-white text-xs border flex items-center gap-1 rounded-full px-2 py-1"
+              className="text-white text-xl border flex items-center gap-1 rounded-full px-2 py-1"
               style={{
                 background: `${method.color.bg}40`,
                 borderColor: `${method.color.bg}80`,
@@ -135,7 +135,7 @@ const PaymentCard = ({ method, isShared }) => {
 
         <button
           onClick={() => setShowModal(true)}
-          className="mx-4 mb-4 py-3 rounded-xl font-bold text-white text-base tracking-wide hover:opacity-90 active:scale-95 transition-all"
+          className="mx-6 mb-6 py-4 rounded-xl font-bold text-white text-base tracking-wide hover:opacity-90 active:scale-95 transition-all"
           style={{ background: method.color.bg }}
         >
           সালামি দিন →
