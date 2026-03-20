@@ -42,7 +42,7 @@ export const Home = () => {
   useEffect(() => {
     if (isShared) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setName(sharedData?.name || "");
+      setName(sharedData?.name || "আপনার নাম");
       return;
     }
 
