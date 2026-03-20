@@ -28,7 +28,7 @@ export const SettingsModal = ({ onClose }) => {
 
   return ReactDOM.createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-start justify-center px-4 pt-16"
+      className="fixed inset-0 z-9999 flex items-start justify-center px-4 pt-16"
       style={{ background: "rgba(0,0,0,0.75)" }}
       onClick={onClose}
     >

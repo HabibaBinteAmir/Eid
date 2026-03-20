@@ -59,8 +59,17 @@ const NextArrow = ({ onClick }) => (
   </button>
 );
 
-const PaymentCard = ({ method, isShared }) => {
+const PaymentCard = ({ method, isShared, variant = "desktop" }) => {
   const [showModal, setShowModal] = useState(false);
+  const isDesktop = variant === "desktop";
+
+  const logoClass = isDesktop
+    ? "w-20 h-20 md:w-26 md:h-26 rounded-2xl flex items-center justify-center overflow-hidden"
+    : "w-20 h-20 md:w-28 md:h-28 rounded-2xl flex items-center justify-center overflow-hidden";
+
+  const cardMaxWidth = isDesktop ? "260px" : "280px";
+  const ctaMx = isDesktop ? "mx-5" : "mx-6";
+  const ctaMb = isDesktop ? "mb-5" : "mb-6";
 
   return (
     <>
@@ -82,13 +91,13 @@ const PaymentCard = ({ method, isShared }) => {
           border: `2px solid ${method.color.bg}80`,
           backdropFilter: "blur(8px)",
           width: "100%",
-          maxWidth: "280px",
+          maxWidth: cardMaxWidth,
           margin: "0 auto",
         }}
       >
         <div className="flex flex-col items-center pt-6 pb-4 px-4 dark:bg-transparent gap-4">
           <div
-            className="w-20 h-20 md:w-28 md:h-28 rounded-2xl flex items-center justify-center overflow-hidden"
+            className={logoClass}
             style={{ background: "#fff", border: "2px solid #ffffff22" }}
           >
             <img
@@ -134,7 +143,7 @@ const PaymentCard = ({ method, isShared }) => {
 
         <button
           onClick={() => setShowModal(true)}
-          className="mx-6 mb-6 py-4 rounded-xl font-bold text-white text-base tracking-wide hover:opacity-90 active:scale-95 transition-all"
+          className={`${ctaMx} ${ctaMb} py-4 rounded-xl font-bold text-white text-base tracking-wide hover:opacity-90 active:scale-95 transition-all`}
           style={{ background: method.color.bg }}
         >
           সালামি দিন →
@@ -193,7 +202,7 @@ export const Payment = ({ isShared }) => {
                 boxSizing: "border-box",
               }}
             >
-              <PaymentCard method={method} isShared={isShared} />
+              <PaymentCard method={method} isShared={isShared} variant="mobile" />
             </div>
           ))}
         </div>
@@ -219,12 +228,12 @@ export const Payment = ({ isShared }) => {
   return (
     <div
       className="group relative z-10 w-full mx-auto"
-      style={{ maxWidth: "1024px", padding: "24px 4px 40px" }}
+      style={{ maxWidth: "860px", padding: "24px 0px 40px" }}
     >
       <Slider {...settings}>
         {PAYMENT_METHODS.map((method) => (
-          <div key={method.id} style={{ padding: "0 4px" }}>
-            <PaymentCard method={method} isShared={isShared} />
+          <div key={method.id} style={{ padding: "0 0px" }}>
+            <PaymentCard method={method} isShared={isShared} variant="desktop" />
           </div>
         ))}
       </Slider>

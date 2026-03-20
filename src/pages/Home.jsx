@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 import banner from '../assets/banner.jpg';
+import { SettingsModal } from "../components/SettingsModal";
 
 export const Home = () => {
   const [name, setName] = useState("");
   const [editing, setEditing] = useState(false);
   const [tempName, setTempName] = useState("");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("eid-name");
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (saved) setName(saved);
-  }, []);
+  const [showSettings, setShowSettings] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
 
   const handleEdit = () => {
     setTempName(name);
@@ -31,6 +28,46 @@ export const Home = () => {
     if (e.key === "Escape") setEditing(false);
   };
 
+
+  const handleShare = () => {
+    const data = {
+      name: localStorage.getItem("eid-name") || "",
+      upay: localStorage.getItem("eid-number-upay") || "",
+      bkash: localStorage.getItem("eid-number-bkash") || "",
+      nagad: localStorage.getItem("eid-number-nagad") || "",
+      rocket: localStorage.getItem("eid-number-rocket") || "",
+    };
+    const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+    const url = `${window.location.origin}?data=${encoded}`;
+    navigator.clipboard.writeText(url);
+    setShareCopied(true);
+    setTimeout(() => setShareCopied(false), 2000);
+  };
+
+  // Detect shared link (from query ?data=...)
+  const getSharedData = () => {
+    const params = new URLSearchParams(window.location.search);
+    const encoded = params.get("data");
+    if (!encoded) return null;
+    try {
+      return JSON.parse(decodeURIComponent(atob(encoded)));
+    } catch {
+      return null;
+    }
+  };
+
+  const sharedData = getSharedData();
+  const isShared = !!sharedData;
+
+  useEffect(() => {
+    if (sharedData) {
+      setName(sharedData.name || "");
+    } else {
+      const saved = localStorage.getItem("eid-name");
+      if (saved) setName(saved);
+    }
+  }, [sharedData]);
+
   return (
     <div className="relative w-full">
 
@@ -42,6 +79,52 @@ export const Home = () => {
 
       {/* Dark Overlay */}
       <div className="fixed inset-0 bg-black/20" />
+      {/* Floating action buttons */}
+<div
+  className="fixed top-4 right-4 z-20 flex gap-2"
+>
+  {/* Share button */}
+  <button
+    onClick={handleShare}
+    className="w-10 h-10 flex items-center justify-center rounded-full transition-all hover:scale-110"
+    style={{
+      background: "rgba(0,0,0,0.5)",
+      border: "1px solid rgba(255,255,255,0.2)",
+      backdropFilter: "blur(8px)",
+      color: shareCopied ? "#4ade80" : "#ffffff",
+    }}
+    title="Share"
+  >
+    {shareCopied ? "✓" : "⎘"}
+  </button>
+
+  {/* Settings button */}
+  <button
+    onClick={() => setShowSettings(true)}
+    className="w-10 h-10 flex items-center justify-center rounded-full transition-all hover:scale-110"
+    style={{
+      background: "rgba(0,0,0,0.5)",
+      border: "1px solid rgba(255,255,255,0.2)",
+      backdropFilter: "blur(8px)",
+      color: "#ffffff",
+    }}
+    title="Settings"
+  >
+    ⚙
+  </button>
+</div>
+
+{/* Hide edit hint if shared */}
+{!isShared && (
+  <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "11px" }}>
+    click your name to edit it
+  </p>
+)}
+
+{/* Settings Modal */}
+{showSettings && (
+  <SettingsModal onClose={() => setShowSettings(false)} />
+)}
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center pt-10 px-4 text-center">
