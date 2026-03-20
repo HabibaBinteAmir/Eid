@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from "react";
 import banner from '../assets/banner.jpg';
 import { SettingsModal } from "../components/SettingsModal";
+import { Payment } from "../components/Payment";
 import {
-  encodeSharedDataToUrlParam,
+  createSharedLink,
   getGlobalSettings,
-  getSharedDataFromUrl,
-  // eslint-disable-next-line no-unused-vars
-  saveGlobalSettings,
+  getSharedParam,
+  getSharedData,
 } from "../lib/eidData";
 
 export const Home = () => {
   const [name, setName] = useState("");
   const [showSettings, setShowSettings] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const [settings, setSettings] = useState(null);
 
-  const sharedData = getSharedDataFromUrl();
-  const isShared = !!sharedData;
-
+  const sharedParam = getSharedParam();
+  const isShared = !!sharedParam;
 
   const handleShare = () => {
-    if (isShared) return;
+    if (isShared || isSharing) return;
 
     (async () => {
+      setIsSharing(true);
       const current = settings || (await getGlobalSettings());
       const data = {
         name: current.name || "",
@@ -31,22 +32,31 @@ export const Home = () => {
         nagad: current.nagad || "",
         rocket: current.rocket || "",
       };
-      const encoded = encodeSharedDataToUrlParam(data);
-      const url = `${window.location.origin}?data=${encoded}`;
-      navigator.clipboard.writeText(url);
+      const queryParam = await createSharedLink(data);
+      const url = `${window.location.origin}/${queryParam}`;
+      await navigator.clipboard.writeText(url);
       setShareCopied(true);
+      setIsSharing(false);
       setTimeout(() => setShareCopied(false), 2000);
     })();
   };
 
   useEffect(() => {
+    let cancelled = false;
+
     if (isShared) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setName(sharedData?.name || "আপনার নাম");
-      return;
+      (async () => {
+        const data = await getSharedData(sharedParam);
+        if (!cancelled && data) {
+          setName(data.name || "আপনার নাম");
+          setSettings(data);
+        }
+      })();
+      return () => {
+        cancelled = true;
+      };
     }
 
-    let cancelled = false;
     (async () => {
       const current = await getGlobalSettings();
       if (cancelled) return;
@@ -57,7 +67,8 @@ export const Home = () => {
     return () => {
       cancelled = true;
     };
-  }, [isShared, sharedData?.name, showSettings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isShared, sharedParam?.type, sharedParam?.value, showSettings]);
 
   return (
     <div className="relative w-full">
@@ -105,10 +116,10 @@ export const Home = () => {
         </div>
       )}
 
-{/* Settings Modal */}
-{showSettings && (
-  <SettingsModal onClose={() => setShowSettings(false)} />
-)}
+      {/* Settings Modal */}
+      {showSettings && (
+        <SettingsModal onClose={() => setShowSettings(false)} />
+      )}
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center pt-10 px-4 text-center">
@@ -176,7 +187,7 @@ export const Home = () => {
           className="text-white/80 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-sm md:max-w-md leading-relaxed"
           style={{ animation: "riseIn 700ms ease both", animationDelay: "300ms" }}
         >
-           আসসালামু আলাইকুম। সবাইকে ঈদের শুভেচ্ছা। <br />আল্লাহ আপনার সব দোয়া কবুল করুন।
+          আসসালামু আলাইকুম। সবাইকে ঈদের শুভেচ্ছা। <br />আল্লাহ আপনার সব দোয়া কবুল করুন।
         </p>
 
         {/* Sender box */}
@@ -200,8 +211,6 @@ export const Home = () => {
           <div className="w-10 h-px bg-yellow-500/40" />
           <span className="text-xs">✦</span>
         </div>
-
-        {/* CTA Button */}
         <button
           className="flex items-center gap-2 border border-yellow-500/70 rounded-full px-6 py-3 text-yellow-300 text-sm sm:text-base bg-black/30 backdrop-blur-sm hover:bg-yellow-500/20 hover:border-yellow-400 transition-all duration-300"
           style={{ animation: "riseIn 700ms ease both", animationDelay: "460ms" }}
@@ -210,6 +219,11 @@ export const Home = () => {
           <span>সালামি দেওয়ার মাধ্যম নির্বাচন করুন</span>
           <span>✨</span>
         </button>
+
+        {/* Payment Methods */}
+        <div className="w-full mt-4" style={{ animation: "riseIn 700ms ease both", animationDelay: "460ms", maxWidth: "100%", overflow: "hidden" }}>
+          <Payment isShared={isShared} />
+        </div>
 
       </div>
     </div>

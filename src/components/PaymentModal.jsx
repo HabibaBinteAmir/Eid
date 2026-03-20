@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { QRCodeSVG } from "qrcode.react";
 import { SuccessModal } from "./SuccessModal";
-import { getGlobalSettings, getSharedDataFromUrl, saveGlobalSettings } from "../lib/eidData";
+import { getGlobalSettings, getSharedParam, getSharedData, saveGlobalSettings } from "../lib/eidData";
 
 const INSTRUCTIONS = {
   upay: [
@@ -43,13 +43,14 @@ export const PaymentModal = ({ method, isShared, onClose }) => {
   const [showSuccess, setShowSuccess] = React.useState(false);
   const [settings, setSettings] = React.useState(null);
 
-  const sharedData = getSharedDataFromUrl();
+  const sharedParam = getSharedParam();
 
   // Load number on open/change
   React.useEffect(() => {
     let cancelled = false;
     (async () => {
       if (isShared) {
+        const sharedData = await getSharedData(sharedParam);
         const n = sharedData?.[method.id] || "";
         if (!cancelled) setNumber(n);
         return;
@@ -64,7 +65,8 @@ export const PaymentModal = ({ method, isShared, onClose }) => {
     return () => {
       cancelled = true;
     };
-  }, [isShared, method.id, sharedData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isShared, method.id, sharedParam?.type, sharedParam?.value]);
 
   const handleSave = () => {
     const trimmed = tempNumber.trim();

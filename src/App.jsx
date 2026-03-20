@@ -3,6 +3,7 @@ import './App.css'
 import { Payment } from './components/Payment'
 import { Home } from './pages/Home'
 
+// eslint-disable-next-line no-unused-vars
 const getSharedData = () => {
   const params = new URLSearchParams(window.location.search);
   const encoded = params.get("data");
@@ -15,13 +16,13 @@ const getSharedData = () => {
 };
 
 function App() {
-  const isShared = !!getSharedData();
+  // const isShared = !!getSharedData();
 
   return (
 <>
 <div className="min-h-screen flex flex-col justify-center">
   <Home />
-  <Payment isShared={isShared} />
+  {/* <Payment isShared={isShared} /> */}
 </div>
 </>
   )
