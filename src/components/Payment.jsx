@@ -147,6 +147,14 @@ const PaymentCard = ({ method, isShared }) => {
 
 // ✅ exported component wrapping the return
 export const Payment = ({ isShared }) => {
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 640);
+
+  React.useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []); 
+
   const settings = {
     dots: true,
     infinite: true,
@@ -159,25 +167,47 @@ export const Payment = ({ isShared }) => {
     prevArrow: <PrevArrow />,
     nextArrow: <NextArrow />,
     responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          arrows: true,
-        },
-      },
-      {
-        breakpoint: 640,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          arrows: false,
-          dots: true,
-        },
-      },
+      { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 1 } },
     ],
   };
+
+  if (isMobile) {
+    return (
+      <div className="relative z-10 w-full" style={{ padding: "16px 0 32px" }}>
+        <div
+          style={{
+            display: "flex",
+            overflowX: "auto",
+            gap: "12px",
+            padding: "0 16px 16px",
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+          }}
+        >
+          {PAYMENT_METHODS.map((method) => (
+            <div
+              key={method.id}
+              style={{
+                minWidth: "80vw",
+                maxWidth: "300px",
+                scrollSnapAlign: "center",
+                flexShrink: 0,
+              }}
+            >
+              <PaymentCard method={method} isShared={isShared} />
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center gap-2 mt-2">
+          {PAYMENT_METHODS.map((_, i) => (
+            <div key={i} style={{ width: "6px", height: "6px", borderRadius: "50%", background: "rgba(250,204,21,0.5)" }} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div
@@ -186,7 +216,7 @@ export const Payment = ({ isShared }) => {
     >
       <Slider {...settings}>
         {PAYMENT_METHODS.map((method) => (
-          <div key={method.id} style={{ padding: "0 6px" }}>
+          <div key={method.id} style={{ padding: "0 8px" }}>
             <PaymentCard method={method} isShared={isShared} />
           </div>
         ))}
